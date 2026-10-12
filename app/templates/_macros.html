@@ -1,0 +1,14 @@
+{# One form field: label + input + the place where its error message appears.
+   The data-* attributes are the rules read by static/js/validation.js [R8]. #}
+{% macro field(name, label, type="text", value="", error="", required_msg="", max=none, max_msg="", match=none, match_msg="", autocomplete="") %}
+<div class="field">
+  <label for="{{ name }}">{{ label }}</label>
+  <input id="{{ name }}" name="{{ name }}" type="{{ type }}" value="{{ value }}"
+         {% if autocomplete %}autocomplete="{{ autocomplete }}"{% endif %}
+         data-required="{{ required_msg }}"
+         {% if max %}data-max="{{ max }}" data-max-msg="{{ max_msg }}"{% endif %}
+         {% if match %}data-match="{{ match }}" data-match-msg="{{ match_msg }}"{% endif %}
+         {% if error %}class="invalid"{% endif %}>
+  <p class="error">{{ error }}</p>
+</div>
+{% endmacro %}

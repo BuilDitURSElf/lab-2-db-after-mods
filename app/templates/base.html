@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1"> {# [R10] phone friendly #}
+  <title>{% block title %}To-Do{% endblock %} · To-Do App</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="{{ url_for('static', filename='js/validation.js') }}" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('todos.index') }}">To-Do</a>
+    {% if session.user_id %}
+    {# [R10] a name and a logout button when logged in #}
+    <div class="user-box">
+      <span>Hi, {{ session.name }}</span>
+      <form method="post" action="{{ url_for('auth.logout') }}">
+        <button class="btn btn-small" type="submit">Log out</button>
+      </form>
+    </div>
+    {% endif %}
+  </header>
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

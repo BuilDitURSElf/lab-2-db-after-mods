@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<section class="card auth-card">
+  <h1>Create account</h1>
+  {# novalidate: we show our own messages instead of the browser's. data-validate: JS checks it first [R8] #}
+  <form method="post" action="{{ url_for('auth.register') }}" novalidate data-validate>
+    {{ field("name", "Name", value=form.name, error=errors.name,
+             required_msg="Name is required", max=100, max_msg="Name is too long (100 characters at most)",
+             autocomplete="name") }}
+    {{ field("email", "Email", type="email", value=form.email, error=errors.email,
+             required_msg="Email is required", max=255, max_msg="Email is too long (255 characters at most)",
+             autocomplete="email") }}
+    {{ field("password", "Password", type="password", error=errors.password,
+             required_msg="Password is required", autocomplete="new-password") }}
+    {{ field("confirm_password", "Confirm password", type="password", error=errors.confirm_password,
+             required_msg="Confirm password is required",
+             match="password", match_msg="Passwords do not match", autocomplete="new-password") }}
+    <button class="btn btn-primary btn-block" type="submit">Register</button>
+  </form>
+  <p class="muted">Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a></p>
+</section>
+{% endblock %}
