@@ -18,8 +18,8 @@
 1. Install **Python 3.10+**, **MySQL Server** and **Git**.
 2. Get the code and enter the folder:
    ```bash
-   git clone <repository-url>
-   cd db-lab2
+   git clone https://github.com/BuilDitURSElf/lab-2-db-after-mods.git
+   cd folder-in-repo
    ```
 3. Create a virtual environment and install the packages:
    ```bash
