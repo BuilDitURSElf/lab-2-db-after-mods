@@ -1,0 +1,172 @@
+/* [R10] One consistent style for all pages. Mobile first, works from 360px up. */
+
+:root {
+  --bg: #f4f6fb;
+  --card: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --primary: #3b5bdb;
+  --primary-dark: #2f4ac0;
+  --danger: #d63031;
+  --border: #d9dee8;
+  --radius: 10px;
+}
+
+/* Dark mode (bonus): follows the phone / computer setting */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #12151c;
+    --card: #1b1f2a;
+    --text: #e6e8ee;
+    --muted: #9aa3b2;
+    --primary: #5b7bff;
+    --primary-dark: #4a68e6;
+    --danger: #ff6b6b;
+    --border: #333a4a;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+a { color: var(--primary); }
+
+/* ---------- top bar ---------- */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+}
+.brand { font-weight: 700; font-size: 1.2rem; text-decoration: none; color: var(--text); }
+.user-box { display: flex; align-items: center; gap: 10px; }
+
+/* ---------- layout ---------- */
+.container { max-width: 640px; margin: 0 auto; padding: 16px; }
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 16px;
+}
+.auth-card { max-width: 420px; margin: 24px auto; }
+h1 { margin: 0 0 8px; font-size: 1.5rem; }
+.muted { color: var(--muted); font-size: 0.9rem; }
+
+/* ---------- forms ---------- */
+.field { margin-bottom: 14px; }
+label { display: block; margin-bottom: 4px; font-weight: 600; font-size: 0.9rem; }
+
+input {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+input:focus { outline: 2px solid var(--primary); outline-offset: 1px; }
+input.invalid { border-color: var(--danger); }
+
+/* Error messages sit right under the field. Empty ones take no space. */
+.error { margin: 4px 0 0; color: var(--danger); font-size: 0.85rem; }
+.error:empty { display: none; }
+
+.alert {
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+  border-radius: 8px;
+}
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-block;
+  padding: 10px 16px;
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn:hover { border-color: var(--primary); }
+.btn-primary { color: #fff; background: var(--primary); border-color: var(--primary); }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-danger { color: var(--danger); border-color: var(--danger); }
+.btn-small { padding: 6px 10px; font-size: 0.9rem; }
+.btn-block { width: 100%; }
+
+/* ---------- to-do list ---------- */
+.add-row { display: flex; gap: 8px; }
+.add-row input { flex: 1; min-width: 0; }
+
+.empty { margin: 24px 0 8px; text-align: center; color: var(--muted); }
+
+.todo-list { list-style: none; margin: 16px 0 0; padding: 0; }
+.todo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.edit-form { flex: 1 1 150px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.edit-form input { flex: 1 1 100px; min-width: 0; }
+.edit-form .error { flex-basis: 100%; margin: 0; }
+
+/* round tick button */
+.check {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  font-size: 1rem;
+  line-height: 1;
+  color: #fff;
+  background: transparent;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* [R6] visible state for done to-dos: filled tick + strike-through + muted text */
+.todo.done .check { background: var(--primary); border-color: var(--primary); }
+.todo.done .edit-form input { text-decoration: line-through; color: var(--muted); }
+
+/* [Bonus: filters] the All / Open / Done tabs */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.filters a {
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  color: var(--text);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+.filters a:hover { border-color: var(--primary); }
+.filters a.active { color: #fff; background: var(--primary); border-color: var(--primary); }
+
+/* [Bonus: due dates] date fields keep their natural size; overdue to-dos are red */
+.add-row input[type="date"],
+.edit-form input[type="date"] { flex: 0 0 auto; width: auto; }
+.add-row { flex-wrap: wrap; }
+.add-row input[name="title"] { flex: 1 1 200px; }  /* title on its own line on phones */
+.todo.overdue .edit-form input[type="date"] { color: var(--danger); border-color: var(--danger); }
+
+/* [Bonus: search] search box above the tabs */
+.search-form { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.search-form input[type="search"] { flex: 1 1 160px; min-width: 0; }

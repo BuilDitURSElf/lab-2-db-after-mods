@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field %}
+{% block title %}Log in{% endblock %}
+{% block content %}
+<section class="card auth-card">
+  <h1>Log in</h1>
+  {# [R2] one single message for wrong e-mail AND wrong password #}
+  {% if errors.form %}<div class="alert" role="alert">{{ errors.form }}</div>{% endif %}
+  <form method="post" action="{{ url_for('auth.login') }}" novalidate data-validate>
+    {{ field("email", "Email", type="email", value=form.email, error=errors.email,
+             required_msg="Email is required", autocomplete="email") }}
+    {{ field("password", "Password", type="password", error=errors.password,
+             required_msg="Password is required", autocomplete="current-password") }}
+    <button class="btn btn-primary btn-block" type="submit">Log in</button>
+  </form>
+  <p class="muted">New here? <a href="{{ url_for('auth.register') }}">Create an account</a></p>
+</section>
+{% endblock %}

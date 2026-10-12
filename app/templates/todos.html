@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}My list{% endblock %}
+{% block content %}
+{# 'args' = the selected tab and search text; every form sends them along so they are kept #}
+<section class="card">
+  <h1>To-Do</h1>
+  <p class="muted">{{ all_open_count }} open · {{ all_count }} total</p>
+
+  {# [R4] add a to-do (with an optional due date) #}
+  <form method="post" action="{{ url_for('todos.add', **args) }}" class="add-form" novalidate data-validate>
+    <div class="add-row">
+      <input name="title" value="{{ add_value }}" placeholder="What needs to be done?" aria-label="New to-do"
+             data-required="Title is required"
+             data-max="200" data-max-msg="Title is too long (200 characters at most)"
+             {% if add_error %}class="invalid"{% endif %}>
+      {# [Bonus: due dates] #}
+      <input type="date" name="due_date" value="{{ add_due }}" aria-label="Due date">
+      <button class="btn btn-primary" type="submit">Add</button>
+    </div>
+    <p class="error">{{ add_error }}</p>
+  </form>
+
+  {# [Bonus: search] a normal GET form: the text goes to the address as ?q=... #}
+  <form method="get" action="{{ url_for('todos.index') }}" class="search-form" role="search">
+    <input type="search" name="q" value="{{ search }}" placeholder="Search your to-dos" aria-label="Search">
+    {% if status != 'all' %}<input type="hidden" name="filter" value="{{ status }}">{% endif %}
+    <button class="btn btn-small" type="submit">Search</button>
+    {% if search %}<a class="btn btn-small" href="{{ url_for('todos.index', filter=args.filter) }}">Clear</a>{% endif %}
+  </form>
+
+  {# [Bonus: filters] three tabs: All / Open / Done, each with its count #}
+  <nav class="filters" aria-label="Filter to-dos">
+    <a href="{{ url_for('todos.index', q=args.q) }}" class="{{ 'active' if status == 'all' }}">All ({{ total_count }})</a>
+    <a href="{{ url_for('todos.index', filter='open', q=args.q) }}" class="{{ 'active' if status == 'open' }}">Open ({{ open_count }})</a>
+    <a href="{{ url_for('todos.index', filter='done', q=args.q) }}" class="{{ 'active' if status == 'done' }}">Done ({{ done_count }})</a>
+  </nav>
+
+  {# [R10] friendly text when there is nothing to show #}
+  {% if not todos %}
+    {% if all_count == 0 %}
+    <p class="empty">Nothing to do yet. Add your first to-do above.</p>
+    {% elif search %}
+    <p class="empty">No {{ status if status != 'all' }} to-dos match "{{ search }}".</p>
+    {% else %}
+    <p class="empty">No {{ status }} to-dos here.</p>
+    {% endif %}
+  {% endif %}
+
+  <ul class="todo-list">
+    {% for t in todos %}
+    {# [R6] the "done" class gives the visible state (tick + strike-through) #}
+    {# [Bonus: due dates] "overdue" = has a due date in the past and is not done #}
+    <li class="todo {% if t.is_done %}done{% endif %} {% if t.due_date and not t.is_done and t.due_date < today %}overdue{% endif %}">
+
+      {# [R6] mark done / not done: sends the NEW value (1 or 0) #}
+      <form method="post" action="{{ url_for('todos.toggle', todo_id=t.todo_id, **args) }}">
+        <input type="hidden" name="is_done" value="{{ 0 if t.is_done else 1 }}">
+        <button class="check" type="submit"
+                aria-label="{{ 'Mark as not done' if t.is_done else 'Mark as done' }}">{% if t.is_done %}&#10003;{% endif %}</button>
+      </form>
+
+      {# [R5] edit the title (and the due date) #}
+      <form method="post" action="{{ url_for('todos.edit', todo_id=t.todo_id, **args) }}" class="edit-form" novalidate data-validate>
+        <input name="title" aria-label="To-do title"
+               value="{{ edit_value if edit_id == t.todo_id else t.title }}"
+               data-required="Title is required"
+               data-max="200" data-max-msg="Title is too long (200 characters at most)"
+               {% if edit_id == t.todo_id and edit_error %}class="invalid"{% endif %}>
+        {# [Bonus: due dates] #}
+        <input type="date" name="due_date" aria-label="Due date"
+               value="{{ edit_due if edit_id == t.todo_id else (t.due_date.isoformat() if t.due_date else '') }}">
+        <button class="btn btn-small" type="submit">Save</button>
+        <p class="error">{% if edit_id == t.todo_id %}{{ edit_error }}{% endif %}</p>
+      </form>
+
+      {# [R7] delete: data-confirm makes JavaScript ask "are you sure?" first #}
+      <form method="post" action="{{ url_for('todos.delete', todo_id=t.todo_id, **args) }}"
+            data-confirm="Are you sure you want to delete this to-do?">
+        <button class="btn btn-small btn-danger" type="submit">Delete</button>
+      </form>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}
